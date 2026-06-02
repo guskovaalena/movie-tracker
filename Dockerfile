@@ -14,4 +14,4 @@ RUN chmod +x entrypoint.sh
 EXPOSE 5000
 
 ENTRYPOINT ["./entrypoint.sh"]
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "run:app"]
+CMD ["gunicorn", "--config", "gunicorn.conf.py", "run:app"]

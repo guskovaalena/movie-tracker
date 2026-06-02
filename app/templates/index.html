@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 {% if current_user.is_authenticated %}
+    <!-- Статистика -->
     <div class="stats-row">
         <div class="stats-card watched">
             <h3>Просмотрено</h3>
@@ -12,40 +13,87 @@
         </div>
     </div>
 
-    <section class="add-movie">
-        <h3>Добавить фильм</h3>
-        <form action="{{ url_for('main.add_movie') }}" method="POST" class="inline-form">
-            <input type="text" name="title" class="form-control" placeholder="Название фильма" required>
-            <button type="submit" class="btn btn-success">Добавить</button>
+    <!-- Поиск через API -->
+    <section class="api-search">
+        <h3>Найти фильм</h3>
+        <form action="{{ url_for('main.search') }}" method="GET" class="inline-form">
+            <input type="text" name="q" class="form-control" placeholder="Введите название фильма..." required>
+            <button type="submit" class="btn btn-primary">🔍 Поиск</button>
         </form>
     </section>
 
+    <!-- Поиск по своему списку -->
+    {% if user_movies or search_query %}
+    <section class="my-search">
+        <h3>Поиск в моём списке</h3>
+        <form action="{{ url_for('main.index') }}" method="GET" class="inline-form">
+            <input type="text" name="search" class="form-control"
+                   placeholder="Фильтр по названию..." value="{{ search_query }}">
+            <button type="submit" class="btn btn-outline">Применить</button>
+            {% if search_query %}
+                <a href="{{ url_for('main.index') }}" class="btn btn-sm btn-danger-outline">Сбросить</a>
+            {% endif %}
+        </form>
+    </section>
+    {% endif %}
+
+    <!-- Мои фильмы -->
     <section class="movie-list">
         <h3>Мои фильмы</h3>
         {% if user_movies %}
-            <ul class="movie-items">
-            {% for um in user_movies %}
-                <li class="movie-item">
-                    <div class="movie-info">
-                        <span class="status-icon">{% if um.status == 'watched' %}✅{% else %}📋{% endif %}</span>
-                        <span class="movie-title">{{ um.movie.title }}</span>
+            <div class="movie-grid">
+                {% for um in user_movies %}
+                    <div class="movie-card">
+                        {% if um.movie.poster %}
+                            <img src="{{ um.movie.poster }}" alt="{{ um.movie.title }}" class="movie-poster">
+                        {% else %}
+                            <div class="movie-poster-placeholder">🎬</div>
+                        {% endif %}
+                        <div class="movie-info">
+                            <h4>{{ um.movie.title }}</h4>
+                            {% if um.movie.year %}
+                                <span class="movie-year">{{ um.movie.year }}</span>
+                            {% endif %}
+                            <span class="status-badge {{ um.status }}">
+                                {% if um.status == 'watched' %}✅ Просмотрено{% else %}📋 Буду смотреть{% endif %}
+                            </span>
+                        </div>
+                        <div class="movie-actions">
+                            <form action="{{ url_for('main.update_status', user_movie_id=um.id) }}" method="POST">
+                                <input type="hidden" name="status"
+                                       value="{% if um.status == 'to_watch' %}watched{% else %}to_watch{% endif %}">
+                                <button type="submit" class="btn btn-sm btn-outline">
+                                    {% if um.status == 'to_watch' %}Отметить просмотренным{% else %}Вернуть{% endif %}
+                                </button>
+                            </form>
+                            <form action="{{ url_for('main.delete_movie', user_movie_id=um.id) }}" method="POST">
+                                <button type="submit" class="btn btn-sm btn-danger-outline">Удалить</button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="movie-actions">
-                        <form action="{{ url_for('main.update_status', user_movie_id=um.id) }}" method="POST" style="display:inline;">
-                            <input type="hidden" name="status" value="{% if um.status == 'to_watch' %}watched{% else %}to_watch{% endif %}">
-                            <button type="submit" class="btn btn-sm btn-outline">
-                                {% if um.status == 'to_watch' %}Отметить просмотренным{% else %}Вернуть в «буду смотреть»{% endif %}
-                            </button>
-                        </form>
-                        <form action="{{ url_for('main.delete_movie', user_movie_id=um.id) }}" method="POST" style="display:inline;">
-                            <button type="submit" class="btn btn-sm btn-danger-outline">Удалить</button>
-                        </form>
-                    </div>
-                </li>
-            {% endfor %}
-            </ul>
+                {% endfor %}
+            </div>
+
+            <!-- Пагинация -->
+            {% if pagination and pagination.pages > 1 %}
+                <div class="pagination">
+                    {% if pagination.has_prev %}
+                        <a href="{{ url_for('main.index', page=pagination.prev_num, search=search_query) }}" class="btn btn-sm btn-outline">← Назад</a>
+                    {% endif %}
+                    <span class="page-info">Страница {{ pagination.page }} из {{ pagination.pages }}</span>
+                    {% if pagination.has_next %}
+                        <a href="{{ url_for('main.index', page=pagination.next_num, search=search_query) }}" class="btn btn-sm btn-outline">Вперёд →</a>
+                    {% endif %}
+                </div>
+            {% endif %}
         {% else %}
-            <p class="empty-message">Ваш список пуст. Добавьте первый фильм!</p>
+            <p class="empty-message">
+                {% if search_query %}
+                    Ничего не найдено по запросу «{{ search_query }}».
+                {% else %}
+                    Ваш список пуст. Найдите фильм через поиск и добавьте его!
+                {% endif %}
+            </p>
         {% endif %}
     </section>
 

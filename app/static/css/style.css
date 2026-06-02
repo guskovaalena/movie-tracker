@@ -299,3 +299,114 @@ footer {
         margin-top: 10px;
     }
 }
+
+/* Поиск */
+.api-search, .my-search {
+    margin-bottom: 25px;
+}
+
+/* Сетка фильмов */
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.movie-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s ease;
+}
+
+.movie-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.movie-poster {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    background-color: #eee;
+}
+
+.movie-poster-placeholder {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    background-color: #f0f0f0;
+}
+
+.movie-info {
+    padding: 12px;
+    flex: 1;
+}
+
+.movie-info h4 {
+    margin: 0 0 5px;
+    font-size: 1rem;
+}
+
+.movie-year {
+    color: #666;
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+.status-badge.watched {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-badge.to-watch {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.movie-actions {
+    padding: 10px 12px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Пагинация */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.page-info {
+    color: #555;
+    font-size: 0.9rem;
+}
+
+/* Адаптивность */
+@media (max-width: 600px) {
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    .movie-poster, .movie-poster-placeholder {
+        height: 220px;
+    }
+}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="search-results">
+    <h2>Результаты поиска: «{{ query }}»</h2>
+
+    {% if results %}
+        <div class="movie-grid">
+            {% for movie in results %}
+                <div class="movie-card">
+                    {% if movie.Poster != 'N/A' %}
+                        <img src="{{ movie.Poster }}" alt="{{ movie.Title }}" class="movie-poster">
+                    {% else %}
+                        <div class="movie-poster-placeholder">🎬</div>
+                    {% endif %}
+                    <div class="movie-info">
+                        <h4>{{ movie.Title }}</h4>
+                        <span class="movie-year">{{ movie.Year }}</span>
+                    </div>
+                    <div class="movie-actions">
+                        <form action="{{ url_for('main.add_from_api') }}" method="POST">
+                            <input type="hidden" name="imdb_id" value="{{ movie.imdbID }}">
+                            <button type="submit" class="btn btn-success">Добавить в «Буду смотреть»</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Ничего не найдено. Попробуйте другой запрос.</p>
+    {% endif %}
+
+    <a href="{{ url_for('main.index') }}" class="btn btn-outline mt-2">← Назад к списку</a>
+</section>
+{% endblock %}

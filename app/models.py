@@ -15,6 +15,10 @@ class User(UserMixin, db.Model):
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), unique=True, nullable=False)
+    year = db.Column(db.String(10))              
+    poster = db.Column(db.String(500))           
+    plot = db.Column(db.Text)                    
+    imdb_id = db.Column(db.String(20))           
     users = db.relationship('UserMovie', back_populates='movie')
 
 class UserMovie(db.Model):
