@@ -573,3 +573,212 @@ footer {
         font-size: 1.5rem;
     }
 }
+
+/* Кнопки фильтров */
+.filters {
+    margin-bottom: 25px;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    display: inline-block;
+    padding: 8px 18px;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    background: white;
+    color: #555;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    border-color: #3498db;
+    color: #3498db;
+    text-decoration: none;
+}
+
+.filter-btn.active {
+    background: #3498db;
+    border-color: #3498db;
+    color: white;
+}
+
+.filter-btn.filter-reset {
+    border-color: #e74c3c;
+    color: #e74c3c;
+    margin-left: auto;
+}
+
+.filter-btn.filter-reset:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+/* Адаптивность */
+@media (max-width: 600px) {
+    .filter-buttons {
+        justify-content: center;
+    }
+    .filter-btn.filter-reset {
+        margin-left: 0;
+    }
+}
+
+/* ================================================================
+   СТИЛИ ЛЕНДИНГА (НЕАВТОРИЗОВАННЫЕ ПОЛЬЗОВАТЕЛИ)
+   ================================================================ */
+
+.landing-page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 60px 20px 40px;
+}
+
+/* Hero */
+.landing-hero {
+    text-align: center;
+    margin-bottom: 70px;
+}
+
+.hero-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 45px;
+    line-height: 1.7;
+}
+
+.hero-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.hero-btn {
+    display: inline-block;
+    padding: 16px 40px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-width: 250px;
+}
+
+.hero-btn:hover {
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.hero-btn-primary {
+    background: linear-gradient(135deg, #e50914, #b2070e);
+    color: white;
+    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+}
+
+.hero-btn-primary:hover {
+    background: linear-gradient(135deg, #ff0a16, #c50810);
+    box-shadow: 0 6px 25px rgba(229, 9, 20, 0.6);
+    color: white;
+}
+
+.hero-btn-secondary {
+    background: white;
+    color: #333;
+    border: 2px solid #ddd;
+}
+
+.hero-btn-secondary:hover {
+    border-color: #999;
+    color: #1a1a2e;
+    background: #f9f9f9;
+}
+
+/* Возможности */
+.features {
+    margin: 0 auto;
+}
+
+.features-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 40px;
+    color: #1a1a2e;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+}
+
+.feature-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 30px 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.feature-icon {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.feature-card h3 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+    font-size: 1.2rem;
+}
+
+.feature-card p {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Адаптивность */
+@media (max-width: 600px) {
+    .landing-page {
+        padding: 40px 15px 30px;
+    }
+    .hero-title {
+        font-size: 1.8rem;
+    }
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    .hero-btn {
+        padding: 14px 30px;
+        font-size: 1rem;
+        min-width: 200px;
+    }
+    .features-title {
+        font-size: 1.5rem;
+    }
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+}

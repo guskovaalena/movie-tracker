@@ -27,15 +27,31 @@
     <section class="my-search">
         <h3>Поиск в моём списке</h3>
         <form action="{{ url_for('main.index') }}" method="GET" class="inline-form">
+            <input type="hidden" name="filter" value="{{ status_filter }}">
             <input type="text" name="search" class="form-control"
-                   placeholder="Фильтр по названию..." value="{{ search_query }}">
+                   placeholder="По названию..." value="{{ search_query }}">
             <button type="submit" class="btn btn-outline">Применить</button>
             {% if search_query %}
-                <a href="{{ url_for('main.index') }}" class="btn btn-sm btn-danger-outline">Сбросить</a>
+                <a href="{{ url_for('main.index', filter=status_filter) }}" class="btn btn-sm btn-danger-outline">Сбросить</a>
             {% endif %}
         </form>
     </section>
     {% endif %}
+
+    <!-- Фильтры -->
+    <section class="filters">
+        <div class="filter-buttons">
+            <a href="{{ url_for('main.index', search=search_query, filter='all') }}"
+               class="filter-btn {% if status_filter == 'all' %}active{% endif %}">Все</a>
+            <a href="{{ url_for('main.index', search=search_query, filter='to_watch') }}"
+               class="filter-btn {% if status_filter == 'to_watch' %}active{% endif %}"> Буду смотреть</a>
+            <a href="{{ url_for('main.index', search=search_query, filter='watched') }}"
+               class="filter-btn {% if status_filter == 'watched' %}active{% endif %}"> Просмотрено</a>
+            {% if status_filter != 'all' or search_query %}
+                <a href="{{ url_for('main.index') }}" class="filter-btn filter-reset"> Сбросить</a>
+            {% endif %}
+        </div>
+    </section>
 
     <!-- Мои фильмы -->
     <section class="movie-list">
@@ -85,22 +101,27 @@
                 {% endfor %}
             </div>
 
-            <!-- Пагинация -->
             {% if pagination and pagination.pages > 1 %}
                 <div class="pagination">
                     {% if pagination.has_prev %}
-                        <a href="{{ url_for('main.index', page=pagination.prev_num, search=search_query) }}" class="btn btn-sm btn-outline">← Назад</a>
+                        <a href="{{ url_for('main.index', page=pagination.prev_num, search=search_query, filter=status_filter) }}" class="btn btn-sm btn-outline">← Назад</a>
                     {% endif %}
                     <span class="page-info">Страница {{ pagination.page }} из {{ pagination.pages }}</span>
                     {% if pagination.has_next %}
-                        <a href="{{ url_for('main.index', page=pagination.next_num, search=search_query) }}" class="btn btn-sm btn-outline">Вперёд →</a>
+                        <a href="{{ url_for('main.index', page=pagination.next_num, search=search_query, filter=status_filter) }}" class="btn btn-sm btn-outline">Вперёд →</a>
                     {% endif %}
                 </div>
             {% endif %}
         {% else %}
             <p class="empty-message">
-                {% if search_query %}
+                {% if search_query and status_filter != 'all' %}
+                    Ничего не найдено по запросу «{{ search_query }}» в категории «{{ 'Просмотрено' if status_filter == 'watched' else 'Буду смотреть' }}».
+                {% elif search_query %}
                     Ничего не найдено по запросу «{{ search_query }}».
+                {% elif status_filter == 'watched' %}
+                    У вас пока нет просмотренных фильмов.
+                {% elif status_filter == 'to_watch' %}
+                    У вас пока нет фильмов в списке «Буду смотреть».
                 {% else %}
                     Ваш список пуст. Найдите фильм через поиск и добавьте его!
                 {% endif %}
@@ -109,9 +130,51 @@
     </section>
 
 {% else %}
-    <div class="welcome">
-        <h2>Добро пожаловать в Movie Tracker!</h2>
-        <p>Войдите или зарегистрируйтесь, чтобы начать отслеживать фильмы.</p>
+
+    <div class="landing-page">
+        <div class="landing-hero">
+            <h1 class="hero-title">Отслеживайте фильмы как настоящий киноман</h1>
+            <p class="hero-subtitle">
+                Добавляйте фильмы в списки «Буду смотреть» и «Просмотрено»,
+                ставьте оценки, пишите отзывы и следите за своей киностатистикой.
+            </p>
+            <div class="hero-actions">
+                <a href="{{ url_for('auth.register') }}" class="hero-btn hero-btn-primary">
+                    Начать сейчас
+                </a>
+                <a href="{{ url_for('auth.login') }}" class="hero-btn hero-btn-secondary">
+                    Уже есть аккаунт? Войти
+                </a>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2 class="features-title">Возможности приложения</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="{{ url_for('static', filename='icons/search.png') }}" alt="Поиск" width="48" height="48">
+                    </div>
+                    <h3>Поиск фильмов</h3>
+                    <p>Находите любые фильмы через OMDb API или нашу базу. Добавляйте в свой список одним кликом.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="{{ url_for('static', filename='icons/star.png') }}" alt="Оценки" width="48" height="48">
+                    </div>
+                    <h3>Оценки и отзывы</h3>
+                    <p>Ставьте оценки от 1 до 10 и пишите рецензии на просмотренные фильмы.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="{{ url_for('static', filename='icons/chart.png') }}" alt="Статистика" width="48" height="48">
+                    </div>
+                    <h3>Статистика</h3>
+                    <p>Следите за прогрессом: сколько просмотрено, сколько ещё в планах.</p>
+                </div>
+            </div>
+        </div>
     </div>
+
 {% endif %}
 {% endblock %}

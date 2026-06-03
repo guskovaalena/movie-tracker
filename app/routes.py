@@ -10,6 +10,7 @@ main = Blueprint('main', __name__)
 @main.route('/')
 def index():
     search_query = request.args.get('search', '')
+    status_filter = request.args.get('filter', 'all')  # all, to_watch, watched
     page = request.args.get('page', 1, type=int)
     per_page = 8
 
@@ -18,12 +19,20 @@ def index():
                                      .join(Movie)\
                                      .order_by(UserMovie.timestamp.desc())
 
+        # Фильтр по статусу
+        if status_filter == 'to_watch':
+            base_query = base_query.filter(UserMovie.status == 'to_watch')
+        elif status_filter == 'watched':
+            base_query = base_query.filter(UserMovie.status == 'watched')
+
+        # Поиск по названию
         if search_query:
             base_query = base_query.filter(Movie.title.ilike(f'%{search_query}%'))
 
         pagination = base_query.paginate(page=page, per_page=per_page, error_out=False)
         user_movies = pagination.items
 
+        # Счётчики для статистики 
         watched_count = UserMovie.query.filter_by(
             user_id=current_user.id, status='watched'
         ).count()
@@ -42,7 +51,8 @@ def index():
         watched_count=watched_count,
         to_watch_count=to_watch_count,
         pagination=pagination,
-        search_query=search_query
+        search_query=search_query,
+        status_filter=status_filter
     )
 
 
