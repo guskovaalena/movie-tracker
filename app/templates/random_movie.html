@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="random-movie-section">
+    <div class="random-movie-card">
+        <h2 class="random-title">Сегодня смотрим...</h2>
+        
+        <div class="random-movie-content">
+            {% if user_movie.movie.poster %}
+                <img src="{{ user_movie.movie.poster }}" alt="{{ user_movie.movie.title }}" class="random-poster">
+            {% else %}
+                <div class="random-poster-placeholder">Movie poster</div>
+            {% endif %}
+            
+            <div class="random-movie-info">
+                <h3>{{ user_movie.movie.title }}</h3>
+                {% if user_movie.movie.year %}
+                    <span class="random-year">{{ user_movie.movie.year }}</span>
+                {% endif %}
+                {% if user_movie.movie.plot %}
+                    <p class="random-plot">{{ user_movie.movie.plot }}</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="random-movie-actions">
+            <form action="{{ url_for('main.update_status', user_movie_id=user_movie.id) }}" method="POST">
+                <input type="hidden" name="status" value="watched">
+                <button type="submit" class="btn btn-success">Отметить просмотренным</button>
+            </form>
+            <div class="random-movie-btns">
+                <a href="{{ url_for('main.random_movie') }}" class="btn btn-outline">Показать другой</a>
+                <a href="{{ url_for('main.index') }}" class="btn btn-outline">Вернуться к списку</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

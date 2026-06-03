@@ -22,6 +22,16 @@
         </form>
     </section>
 
+    <!-- Случайный фильтр -->
+    {% if to_watch_count > 0 %}
+    <section class="random-pick">
+        <a href="{{ url_for('main.random_movie') }}" class="random-btn">
+            Что посмотреть?
+        </a>
+        <p class="random-subtitle">Выберите случайный фильм из вашего списка «Буду смотреть»</p>
+    </section>
+    {% endif %}
+
     <!-- Поиск по своему списку -->
     {% if user_movies or search_query %}
     <section class="my-search">
@@ -93,7 +103,7 @@
                                     {% if um.status == 'to_watch' %}Отметить просмотренным{% else %}Вернуть{% endif %}
                                 </button>
                             </form>
-                            <form action="{{ url_for('main.delete_movie', user_movie_id=um.id) }}" method="POST">
+                            <form action="{{ url_for('main.delete_movie', user_movie_id=um.id) }}" method="POST" class="delete-form">
                                 <button type="submit" class="btn btn-sm btn-danger-outline">Удалить</button>
                             </form>
                         </div>

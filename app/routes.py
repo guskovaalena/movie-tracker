@@ -207,6 +207,28 @@ def my_reviews():
     return render_template('my_reviews.html', movies=reviewed_movies)
 
 
+@main.route('/random_movie')
+@login_required
+def random_movie():
+    """Выбирает случайный фильм из списка «Буду смотреть»."""
+    import random
+    
+    to_watch = UserMovie.query.filter_by(
+        user_id=current_user.id, status='to_watch'
+    ).join(Movie).all()
+    
+    if not to_watch:
+        flash('У вас нет фильмов в списке «Буду смотреть»')
+        return redirect(url_for('main.index'))
+    
+    random_um = random.choice(to_watch)
+    
+    return render_template(
+        'random_movie.html',
+        user_movie=random_um
+    )
+
+
 @main.route('/delete/<int:user_movie_id>', methods=['POST'])
 @login_required
 def delete_movie(user_movie_id):

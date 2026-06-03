@@ -7,6 +7,20 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Подтверждение удаления</h3>
+            </div>
+            <div class="modal-body">
+                <p>Вы уверены, что хотите удалить этот фильм из списка?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="modalCancel">Отмена</button>
+                <button type="button" class="btn btn-danger" id="modalConfirm">Удалить</button>
+            </div>
+        </div>
+    </div>
     {% set pending_count = 0 %}
     {% if current_user.is_authenticated and current_user.received_requests is defined %}
         {% set pending_count = current_user.received_requests|selectattr('status', 'equalto', 'pending')|list|length %}
