@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="friends-page">
+
+    <h2>Друзья</h2>
+
+    <!-- Поиск пользователей -->
+    <section class="friend-search">
+        <h3>Найти пользователя</h3>
+        <form action="{{ url_for('main.friends') }}" method="GET" class="inline-form">
+            <input type="text" name="search" class="form-control" placeholder="Имя пользователя..." value="{{ search_query }}">
+            <button type="submit" class="btn btn-primary">Поиск</button>
+        </form>
+
+        {% if found_users %}
+            <div class="found-users">
+                <h4>Результаты поиска:</h4>
+                {% for user in found_users %}
+                    <div class="friend-card">
+                        <span class="friend-name">{{ user.username }}</span>
+                        <form action="{{ url_for('main.send_request', user_id=user.id) }}" method="POST">
+                            <button type="submit" class="btn btn-sm btn-success">Добавить в друзья</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        {% elif search_query %}
+            <p class="empty-message">Пользователи не найдены.</p>
+        {% endif %}
+    </section>
+
+    <!-- Входящие заявки -->
+    {% if incoming_requests %}
+    <section class="incoming-requests">
+        <h3>Входящие заявки</h3>
+        {% for req in incoming_requests %}
+            <div class="friend-card">
+                <span class="friend-name">{{ req.user.username }}</span>
+                <div class="friend-card-actions">
+                    <form action="{{ url_for('main.accept_request', friendship_id=req.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-success">Принять</button>
+                    </form>
+                    <form action="{{ url_for('main.reject_request', friendship_id=req.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger-outline">Отклонить</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    <!-- Исходящие заявки -->
+    {% set outgoing_requests = current_user.sent_requests|selectattr('status', 'equalto', 'pending')|list %}
+    {% if outgoing_requests %}
+    <section class="outgoing-requests">
+        <h3>Отправленные заявки</h3>
+        {% for req in outgoing_requests %}
+            <div class="friend-card">
+                <span class="friend-name">{{ req.friend.username }}</span>
+                <span class="pending-badge">Ожидает ответа</span>
+            </div>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    <!-- Список друзей -->
+    <section class="friends-list">
+        <h3>Мои друзья</h3>
+        {% if friends_list %}
+            {% for friend in friends_list %}
+                <div class="friend-card">
+                    <a href="{{ url_for('main.friend_profile', friend_id=friend.id) }}" class="friend-name-link">
+                        {{ friend.username }}
+                    </a>
+                    <form action="{{ url_for('main.remove_friend', friend_id=friend.id) }}" method="POST">
+                        <button type="submit" class="btn btn-sm btn-danger-outline">Удалить</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty-message">У вас пока нет друзей. Найдите пользователя выше и отправьте заявку!</p>
+        {% endif %}
+    </section>
+
+</section>
+{% endblock %}

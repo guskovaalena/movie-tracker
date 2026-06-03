@@ -17,9 +17,15 @@
                         <span class="movie-year">{{ movie.Year }}</span>
                     </div>
                     <div class="movie-actions">
-                        <form action="{{ url_for('main.add_from_api') }}" method="POST">
+                        <form action="{{ url_for('main.add_from_api') }}" method="POST" style="display:inline;">
                             <input type="hidden" name="imdb_id" value="{{ movie.imdbID }}">
-                            <button type="submit" class="btn btn-success">Буду смотреть</button>
+                            <input type="hidden" name="status" value="to_watch">
+                            <button type="submit" class="btn btn-sm btn-outline">Буду смотреть</button>
+                        </form>
+                        <form action="{{ url_for('main.add_from_api') }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="imdb_id" value="{{ movie.imdbID }}">
+                            <input type="hidden" name="status" value="watched">
+                            <button type="submit" class="btn btn-sm btn-success">Просмотрено</button>
                         </form>
                     </div>
                 </div>

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="friend-profile">
+
+    <h2>Профиль {{ friend.username }}</h2>
+
+    <div class="stats-row">
+        <div class="stats-card watched">
+            <h3>Просмотрено</h3>
+            <p class="big-number">{{ watched_count }}</p>
+        </div>
+        <div class="stats-card to-watch">
+            <h3>Буду смотреть</h3>
+            <p class="big-number">{{ to_watch_count }}</p>
+        </div>
+    </div>
+
+    <h3>Фильмы {{ friend.username }}</h3>
+    {% if friend_movies %}
+        <div class="movie-grid">
+            {% for um in friend_movies %}
+                <div class="movie-card">
+                    {% if um.movie.poster %}
+                        <img src="{{ um.movie.poster }}" alt="{{ um.movie.title }}" class="movie-poster">
+                    {% else %}
+                        <div class="movie-poster-placeholder">🎬</div>
+                    {% endif %}
+                    <div class="movie-info">
+                        <h4>{{ um.movie.title }}</h4>
+                        {% if um.movie.year %}
+                            <span class="movie-year">{{ um.movie.year }}</span>
+                        {% endif %}
+                        <span class="status-badge {{ um.status }}">
+                            {% if um.status == 'watched' %}Просмотрено{% else %}Буду смотреть{% endif %}
+                        </span>
+                        {% if um.rating %}
+                            <div class="stars-display small">
+                                {% for i in range(1, 11) %}
+                                    <span class="star {% if i <= um.rating %}filled{% endif %}">★</span>
+                                {% endfor %}
+                                <span class="rating-number">{{ um.rating }}/10</span>
+                            </div>
+                        {% endif %}
+                        {% if um.review %}
+                            <p class="review-snippet">«{{ um.review[:100] }}{% if um.review|length > 100 %}...{% endif %}»</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty-message">{{ friend.username }} пока не добавил ни одного фильма.</p>
+    {% endif %}
+
+    <a href="{{ url_for('main.friends') }}" class="btn btn-outline mt-2">← Назад к друзьям</a>
+
+</section>
+{% endblock %}

@@ -7,13 +7,24 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    {% set pending_count = 0 %}
+    {% if current_user.is_authenticated and current_user.received_requests is defined %}
+        {% set pending_count = current_user.received_requests|selectattr('status', 'equalto', 'pending')|list|length %}
+    {% endif %}
+
     <header>
         <nav class="navbar">
             <a href="{{ url_for('main.index') }}" class="logo">MovieTracker</a>
             <div class="nav-links">
                 {% if current_user.is_authenticated %}
-                    <span class="nav-username">{{ current_user.username }}</span>
+                    <a href="{{ url_for('main.friends') }}" class="nav-friends">
+                        Друзья
+                        {% if pending_count > 0 %}
+                            <span class="badge">{{ pending_count }}</span>
+                        {% endif %}
+                    </a>
                     <a href="{{ url_for('main.my_reviews') }}">Мои отзывы</a>
+                    <a href="{{ url_for('main.index') }}" class="nav-username">{{ current_user.username }}</a>
                     <a href="{{ url_for('auth.logout') }}">Выйти</a>
                 {% else %}
                     <a href="{{ url_for('auth.login') }}">Войти</a>
@@ -23,7 +34,7 @@
         </nav>
     </header>
 
-        <main class="container">
+    <main class="container">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="flash-messages">

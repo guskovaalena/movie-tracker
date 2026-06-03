@@ -33,3 +33,14 @@ class UserMovie(db.Model):
 
     user = db.relationship('User', back_populates='movies')
     movie = db.relationship('Movie', back_populates='users')
+
+class Friendship(db.Model):
+    __tablename__ = 'friendships'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    friend_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    status = db.Column(db.String(20), default='pending')  # pending, accepted, rejected
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    user = db.relationship('User', foreign_keys=[user_id], backref='sent_requests')
+    friend = db.relationship('User', foreign_keys=[friend_id], backref='received_requests')

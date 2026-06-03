@@ -136,7 +136,7 @@
             <h1 class="hero-title">Отслеживайте фильмы как настоящий киноман</h1>
             <p class="hero-subtitle">
                 Добавляйте фильмы в списки «Буду смотреть» и «Просмотрено»,
-                ставьте оценки, пишите отзывы и следите за своей киностатистикой.
+                ставьте оценки, пишите отзывы и следите за своей киностатистикой
             </p>
             <div class="hero-actions">
                 <a href="{{ url_for('auth.register') }}" class="hero-btn hero-btn-primary">
@@ -156,21 +156,28 @@
                         <img src="{{ url_for('static', filename='icons/search.png') }}" alt="Поиск" width="48" height="48">
                     </div>
                     <h3>Поиск фильмов</h3>
-                    <p>Находите любые фильмы через OMDb API или нашу базу. Добавляйте в свой список одним кликом.</p>
+                    <p>Находите любые фильмы через поиск и добавляйте в свой список одним кликом.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <img src="{{ url_for('static', filename='icons/star.png') }}" alt="Оценки" width="48" height="48">
                     </div>
                     <h3>Оценки и отзывы</h3>
-                    <p>Ставьте оценки от 1 до 10 и пишите рецензии на просмотренные фильмы.</p>
+                    <p>Ставьте оценки от 1 до 10 и пишите рецензии на просмотренные фильмы</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <img src="{{ url_for('static', filename='icons/chart.png') }}" alt="Статистика" width="48" height="48">
                     </div>
                     <h3>Статистика</h3>
-                    <p>Следите за прогрессом: сколько просмотрено, сколько ещё в планах.</p>
+                    <p>Следите за прогрессом: сколько просмотрено, сколько ещё в планах</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="{{ url_for('static', filename='icons/friends.png') }}" alt="Друзья" width="48" height="48">
+                    </div>
+                    <h3>Добавляйте друзей</h3>
+                    <p>Смотрите списки фильмов ваших друзей, а также их оценки и отзывы на просмотренные фильмы</p>
                 </div>
             </div>
         </div>
