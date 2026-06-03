@@ -12,15 +12,31 @@
             <button type="submit" class="btn btn-primary">Поиск</button>
         </form>
 
-        {% if found_users %}
+                {% if found_users %}
             <div class="found-users">
                 <h4>Результаты поиска:</h4>
                 {% for user in found_users %}
                     <div class="friend-card">
                         <span class="friend-name">{{ user.username }}</span>
-                        <form action="{{ url_for('main.send_request', user_id=user.id) }}" method="POST">
-                            <button type="submit" class="btn btn-sm btn-success">Добавить в друзья</button>
-                        </form>
+                        <div class="friend-card-actions">
+                            {% set status = user_statuses.get(user.id, 'none') %}
+                            
+                            {% if status == 'friend' %}
+                                <span class="status-text friend-status">У вас в друзьях</span>
+                            {% elif status == 'sent' %}
+                                <span class="status-text sent-status">Заявка отправлена</span>
+                            {% elif status == 'received' %}
+                                <span class="status-text received-status">Входящая заявка</span>
+                            {% elif status == 'rejected' %}
+                                <form action="{{ url_for('main.send_request', user_id=user.id) }}" method="POST">
+                                    <button type="submit" class="btn btn-sm btn-outline">Добавить в друзья</button>
+                                </form>
+                            {% else %}
+                                <form action="{{ url_for('main.send_request', user_id=user.id) }}" method="POST">
+                                    <button type="submit" class="btn btn-sm btn-success">Добавить в друзья</button>
+                                </form>
+                            {% endif %}
+                        </div>
                     </div>
                 {% endfor %}
             </div>

@@ -1,4 +1,4 @@
-/* Сброс и базовые настройки */
+/*СБРОС И БАЗОВЫЕ НАСТРОЙКИ*/
 * {
     margin: 0;
     padding: 0;
@@ -7,8 +7,8 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
+    background-color: #faf5fc;
+    color: #2d1b69;
     line-height: 1.6;
     display: flex;
     flex-direction: column;
@@ -16,11 +16,12 @@ body {
 }
 
 a {
-    color: #2c3e50;
+    color: #7d3c98;
     text-decoration: none;
 }
 
 a:hover {
+    color: #c2185b;
     text-decoration: underline;
 }
 
@@ -32,20 +33,26 @@ a:hover {
     width: 100%;
 }
 
-/* Навигация */
+/*НАВИГАЦИЯ*/
 .navbar {
-    background-color: #2c3e50;
+    background: linear-gradient(135deg, #2d1b69 0%, #4a0e4e 100%);
     color: white;
     padding: 12px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 2px 10px rgba(74, 14, 78, 0.3);
 }
 
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
     color: white;
+}
+
+.logo:hover {
+    color: #e8daef;
+    text-decoration: none;
 }
 
 .nav-links {
@@ -55,30 +62,40 @@ a:hover {
 }
 
 .nav-links a {
-    color: #ecf0f1;
+    color: #e8daef;
     font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+    color: white;
+    text-decoration: none;
 }
 
 .nav-username {
-    color: #bdc3c7;
+    color: #d7bde2 !important;
     margin-right: 5px;
 }
 
-/* Flash-сообщения */
+.nav-username:hover {
+    color: white !important;
+}
+
+/*FLASH-СООБЩЕНИЯ*/
 .flash-messages {
     margin-bottom: 20px;
 }
 
 .flash-message {
-    background-color: #d1ecf1;
-    border: 1px solid #bee5eb;
-    color: #0c5460;
+    background-color: #e8daef;
+    border: 1px solid #d7bde2;
+    color: #4a0e4e;
     padding: 12px 16px;
-    border-radius: 4px;
+    border-radius: 8px;
     margin-bottom: 8px;
 }
 
-/* Формы */
+/*ФОРМЫ*/
 .form-section {
     max-width: 400px;
     margin: 30px auto;
@@ -92,20 +109,23 @@ a:hover {
     display: block;
     margin-bottom: 5px;
     font-weight: 500;
+    color: #4a0e4e;
 }
 
 .form-control {
     width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 10px 14px;
+    border: 2px solid #d7bde2;
+    border-radius: 8px;
     font-size: 1rem;
+    background: white;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-control:focus {
     outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 2px rgba(52,152,219,0.3);
+    border-color: #a569bd;
+    box-shadow: 0 0 0 3px rgba(165, 105, 189, 0.2);
 }
 
 .inline-form {
@@ -122,63 +142,68 @@ a:hover {
     text-align: center;
 }
 
-/* Кнопки */
+/*КНОПКИ*/
 .btn {
     display: inline-block;
-    padding: 8px 18px;
-    border: none;
-    border-radius: 4px;
+    padding: 10px 20px;
+    border: 2px solid transparent;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 500;
     text-align: center;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .btn-primary {
-    background-color: #3498db;
+    background: linear-gradient(135deg, #7d3c98, #6c3483);
     color: white;
+    border-color: transparent;
 }
 
 .btn-primary:hover {
-    background-color: #2980b9;
+    background: linear-gradient(135deg, #6c3483, #4a0e4e);
+    transform: translateY(-1px);
 }
 
 .btn-success {
-    background-color: #2ecc71;
+    background: linear-gradient(135deg, #a569bd, #8e44ad);
     color: white;
+    border-color: transparent;
 }
 
 .btn-success:hover {
-    background-color: #27ae60;
+    background: linear-gradient(135deg, #8e44ad, #6c3483);
+    transform: translateY(-1px);
 }
 
 .btn-outline {
     background-color: transparent;
-    color: #2c3e50;
-    border: 1px solid #bdc3c7;
+    color: #7d3c98;
+    border: 2px solid #bb8fce;
 }
 
 .btn-outline:hover {
-    background-color: #ecf0f1;
+    background-color: #e8daef;
+    border-color: #7d3c98;
 }
 
 .btn-danger-outline {
     background-color: transparent;
-    color: #e74c3c;
-    border: 1px solid #e74c3c;
+    color: #c2185b;
+    border: 2px solid #c2185b;
 }
 
 .btn-danger-outline:hover {
-    background-color: #fdedec;
+    background-color: #fce4ec;
 }
 
 .btn-sm {
-    padding: 4px 10px;
+    padding: 5px 12px;
     font-size: 0.85rem;
 }
 
-/* Карточки статистики */
+/*КАРТОЧКИ СТАТИСТИКИ*/
 .stats-row {
     display: flex;
     gap: 20px;
@@ -188,41 +213,45 @@ a:hover {
 .stats-card {
     flex: 1;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 12px;
     text-align: center;
     color: white;
 }
 
 .stats-card.watched {
-    background-color: #3498db;
+    background: linear-gradient(135deg, #511e54, #6c3483);
 }
 
 .stats-card.to-watch {
-    background-color: #f39c12;
+     background: linear-gradient(135deg, #d542dd, #b245d0);
 }
 
 .stats-card h3 {
     font-size: 1.1rem;
     margin-bottom: 8px;
     opacity: 0.9;
+    color: white !important;
 }
 
 .big-number {
     font-size: 2.5rem;
     font-weight: bold;
+    color: white;
 }
 
-/* Список фильмов */
+/*СПИСОК ФИЛЬМОВ*/
 .add-movie {
     margin-bottom: 30px;
 }
 
 .add-movie h3 {
     margin-bottom: 10px;
+    color: #4a0e4e;
 }
 
 .movie-list h3 {
     margin-bottom: 15px;
+    color: #4a0e4e;
 }
 
 .movie-items {
@@ -235,8 +264,8 @@ a:hover {
     align-items: center;
     padding: 12px 16px;
     background: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border: 1px solid #e8daef;
+    border-radius: 8px;
     margin-bottom: 8px;
 }
 
@@ -253,58 +282,41 @@ a:hover {
 
 .movie-title {
     font-weight: 500;
+    color: #2d1b69;
 }
 
 .movie-actions {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
+    padding-bottom: 15px;
+    padding-left: 15px;
 }
 
 .empty-message {
-    color: #7f8c8d;
+    color: #9b59b6;
     font-style: italic;
-}
-
-/* Приветствие неавторизованным */
-.welcome {
-    text-align: center;
-    margin-top: 80px;
-}
-
-.welcome h2 {
-    font-size: 2rem;
-    margin-bottom: 10px;
 }
 
 footer {
     text-align: center;
     padding: 15px;
-    background-color: #2c3e50;
-    color: #bdc3c7;
+    background: linear-gradient(135deg, #2d1b69 0%, #4a0e4e 100%);
+    color: #d7bde2;
     font-size: 0.9rem;
     margin-top: auto;
 }
 
-@media (max-width: 600px) {
-    .stats-row {
-        flex-direction: column;
-    }
-    .movie-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .movie-actions {
-        margin-top: 10px;
-    }
-}
-
-/* Поиск */
+/*ПОИСК*/
 .api-search, .my-search {
     margin-bottom: 25px;
 }
 
-/* Сетка фильмов */
+.api-search h3, .my-search h3 {
+    color: #4a0e4e;
+}
+
+/*СЕТКА ФИЛЬМОВ*/
 .movie-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -314,23 +326,24 @@ footer {
 
 .movie-card {
     background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    border: 1px solid #e8daef;
+    border-radius: 12px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: box-shadow 0.2s ease;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .movie-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 20px rgba(74, 14, 78, 0.15);
+    transform: translateY(-3px);
 }
 
 .movie-poster {
     width: 100%;
     height: 300px;
     object-fit: cover;
-    background-color: #eee;
+    background-color: #f5eef8;
 }
 
 .movie-poster-placeholder {
@@ -340,7 +353,8 @@ footer {
     align-items: center;
     justify-content: center;
     font-size: 4rem;
-    background-color: #f0f0f0;
+    background-color: #f5eef8;
+    color: #bb8fce;
 }
 
 .movie-info {
@@ -351,10 +365,11 @@ footer {
 .movie-info h4 {
     margin: 0 0 5px;
     font-size: 1rem;
+    color: #2d1b69;
 }
 
 .movie-year {
-    color: #666;
+    color: #9b59b6;
     font-size: 0.85rem;
     display: block;
     margin-bottom: 5px;
@@ -362,31 +377,26 @@ footer {
 
 .status-badge {
     display: inline-block;
-    padding: 2px 8px;
+    padding: 2px 10px;
     border-radius: 12px;
     font-size: 0.8rem;
     margin-top: 5px;
+    border: 1px;
 }
 
 .status-badge.watched {
-    background-color: #d4edda;
-    color: #155724;
+    background-color: #e8daef;
+    color: #4a0e4e;
+    border-color: #e8daef !important; 
 }
 
 .status-badge.to-watch {
-    background-color: #fff3cd;
-    color: #856404;
+    background-color: #f5eef8;
+    color: #7d3c98;
+    border-color: #e8daef !important;
 }
 
-.movie-actions {
-    padding: 10px 12px;
-    border-top: 1px solid #eee;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-/* Пагинация */
+/*ПАГИНАЦИЯ*/
 .pagination {
     display: flex;
     justify-content: center;
@@ -396,21 +406,11 @@ footer {
 }
 
 .page-info {
-    color: #555;
+    color: #7d3c98;
     font-size: 0.9rem;
 }
 
-/* Адаптивность */
-@media (max-width: 600px) {
-    .movie-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-    .movie-poster, .movie-poster-placeholder {
-        height: 220px;
-    }
-}
-
-/* Звёздный рейтинг */
+/*ЗВЁЗДНЫЙ РЕЙТИНГ*/
 .star-rating {
     display: flex;
     flex-direction: row-reverse;
@@ -424,7 +424,7 @@ footer {
 
 .star-rating label {
     font-size: 2rem;
-    color: #ddd;
+    color: #d7bde2;
     cursor: pointer;
     transition: color 0.2s ease;
 }
@@ -432,10 +432,10 @@ footer {
 .star-rating input:checked ~ label,
 .star-rating label:hover,
 .star-rating label:hover ~ label {
-    color: #ffc107;
+    color: #c2185b;
 }
 
-/* Звёзды для отображения */
+/*ЗВЁЗДЫ*/
 .stars-display {
     display: flex;
     align-items: center;
@@ -449,20 +449,20 @@ footer {
 
 .stars-display .star {
     font-size: 1.2rem;
-    color: #ddd;
+    color: #d7bde2;
 }
 
 .stars-display .star.filled {
-    color: #ffc107;
+    color: #c2185b;
 }
 
 .rating-number {
     margin-left: 8px;
     font-weight: bold;
-    color: #333;
+    color: #4a0e4e;
 }
 
-/* Страница оценки */
+/*СТРАНИЦА ОЦЕНКИ*/
 .rate-section {
     max-width: 600px;
     margin: 30px auto;
@@ -470,9 +470,10 @@ footer {
 
 .rate-card {
     background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 25px;
+    border: 1px solid #e8daef;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(74, 14, 78, 0.08);
 }
 
 .rate-header {
@@ -482,17 +483,22 @@ footer {
 
 .rate-poster {
     width: 150px;
-    border-radius: 8px;
+    border-radius: 12px;
     margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(74, 14, 78, 0.2);
 }
 
 .rate-year {
-    color: #666;
+    color: #9b59b6;
     font-size: 0.9rem;
 }
 
 .rate-form .form-group {
     margin-bottom: 20px;
+}
+
+.rate-form .form-group label {
+    color: #4a0e4e;
 }
 
 .rate-actions {
@@ -502,10 +508,14 @@ footer {
     margin-top: 25px;
 }
 
-/* Страница отзывов */
+/*СТРАНИЦА ОТЗЫВОВ*/
 .reviews-section {
     max-width: 800px;
     margin: 0 auto;
+}
+
+.reviews-section h2 {
+    color: #4a0e4e;
 }
 
 .reviews-list {
@@ -516,9 +526,14 @@ footer {
 
 .review-card {
     background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    border: 1px solid #e8daef;
+    border-radius: 12px;
     padding: 20px;
+    transition: box-shadow 0.2s ease;
+}
+
+.review-card:hover {
+    box-shadow: 0 4px 15px rgba(74, 14, 78, 0.1);
 }
 
 .review-movie {
@@ -529,24 +544,26 @@ footer {
 
 .review-poster {
     width: 80px;
-    border-radius: 4px;
+    border-radius: 8px;
 }
 
 .review-info h3 {
     margin: 0 0 8px;
+    color: #2d1b69;
 }
 
 .review-year {
-    color: #666;
+    color: #9b59b6;
     font-weight: normal;
 }
 
 .review-text {
-    background: #f9f9f9;
+    background: #faf5fc;
     padding: 15px;
-    border-radius: 4px;
+    border-radius: 8px;
     margin-bottom: 10px;
     font-style: italic;
+    border-left: 3px solid #a569bd;
 }
 
 .review-actions {
@@ -554,27 +571,13 @@ footer {
 }
 
 .review-snippet {
-    color: #666;
+    color: #7d3c98;
     font-size: 0.9rem;
     margin-top: 5px;
     font-style: italic;
 }
 
-/* Адаптивность */
-@media (max-width: 600px) {
-    .review-movie {
-        flex-direction: column;
-    }
-    .review-poster {
-        width: 100%;
-        max-width: 150px;
-    }
-    .star-rating label {
-        font-size: 1.5rem;
-    }
-}
-
-/* Кнопки фильтров */
+/*КНОПКИ ФИЛЬТРОВ*/
 .filters {
     margin-bottom: 25px;
 }
@@ -588,56 +591,172 @@ footer {
 .filter-btn {
     display: inline-block;
     padding: 8px 18px;
-    border: 2px solid #ddd;
+    border: 2px solid #d7bde2;
     border-radius: 25px;
     background: white;
-    color: #555;
+    color: #7d3c98;
     font-weight: 500;
     text-decoration: none;
     transition: all 0.2s ease;
 }
 
 .filter-btn:hover {
-    border-color: #3498db;
-    color: #3498db;
+    border-color: #a569bd;
+    color: #4a0e4e;
     text-decoration: none;
+    background: #faf5fc;
 }
 
 .filter-btn.active {
-    background: #3498db;
-    border-color: #3498db;
+    background: linear-gradient(135deg, #7d3c98, #6c3483);
+    border-color: #7d3c98;
     color: white;
 }
 
 .filter-btn.filter-reset {
-    border-color: #e74c3c;
-    color: #e74c3c;
+    border-color: #c2185b;
+    color: #c2185b;
     margin-left: auto;
 }
 
 .filter-btn.filter-reset:hover {
-    background: #e74c3c;
+    background: #fce4ec;
+}
+
+/*СТРАНИЦА ДРУЗЕЙ*/
+.friends-page {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.friends-page h2 {
+    margin-bottom: 25px;
+    color: #4a0e4e;
+}
+
+.friends-page h3 {
+    color: #4a0e4e;
+    margin-bottom: 15px;
+}
+
+.friend-search {
+    margin-bottom: 30px;
+}
+
+.found-users {
+    margin-top: 20px;
+}
+
+.friend-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border: 1px solid #e8daef;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    transition: box-shadow 0.2s ease;
+}
+
+.friend-card:hover {
+    box-shadow: 0 2px 10px rgba(74, 14, 78, 0.08);
+}
+
+.friend-name {
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: #2d1b69;
+}
+
+.friend-name-link {
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: #7d3c98;
+    text-decoration: none;
+}
+
+.friend-name-link:hover {
+    color: #c2185b;
+    text-decoration: underline;
+}
+
+.friend-card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.incoming-requests {
+    margin-bottom: 30px;
+}
+
+.outgoing-requests {
+    margin-bottom: 30px;
+}
+
+.friends-list {
+    margin-bottom: 40px;
+}
+
+/*ПРОФИЛЬ ДРУГА*/
+.friend-profile h2 {
+    margin-bottom: 25px;
+    color: #4a0e4e;
+}
+
+.friend-profile h3 {
+    color: #4a0e4e;
+    margin-bottom: 15px;
+}
+
+/*БЕЙДЖ С КОЛИЧЕСТВОМ ЗАЯВОК*/
+.nav-friends {
+    position: relative;
+}
+
+.badge {
+    background-color: #c2185b;
     color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 12px;
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1.2;
 }
 
-/* Адаптивность */
-@media (max-width: 600px) {
-    .filter-buttons {
-        justify-content: center;
-    }
-    .filter-btn.filter-reset {
-        margin-left: 0;
-    }
+.pending-badge {
+    color: #c2185b;
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 
-/* СТИЛИ ЛЕНДИНГА */
+/*СТРАНИЦА РЕЗУЛЬТАТОВ ПОИСКА*/
+.search-results h2 {
+    color: #4a0e4e;
+    margin-bottom: 20px;
+}
+
+.search-results .movie-actions {
+    padding: 12px 16px 20px 20px;
+    border-top: 1px solid #e8daef;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/*СТИЛИ ЛЕНДИНГА*/
 .landing-page {
     max-width: 700px;
     margin: 0 auto;
     padding: 60px 20px 40px;
 }
 
-/* Hero */
 .landing-hero {
     text-align: center;
     margin-bottom: 70px;
@@ -646,14 +765,14 @@ footer {
 .hero-title {
     font-size: 2.8rem;
     font-weight: 800;
-    color: #1a1a2e;
+    color: #2d1b69;
     margin-bottom: 20px;
     line-height: 1.2;
 }
 
 .hero-subtitle {
     font-size: 1.2rem;
-    color: #555;
+    color: #7d3c98;
     margin-bottom: 45px;
     line-height: 1.7;
 }
@@ -683,30 +802,29 @@ footer {
 }
 
 .hero-btn-primary {
-    background: linear-gradient(135deg, #e50914, #b2070e);
+    background: linear-gradient(135deg, #c2185b, #a31545);
     color: white;
-    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+    box-shadow: 0 4px 15px rgba(194, 24, 91, 0.4);
 }
 
 .hero-btn-primary:hover {
-    background: linear-gradient(135deg, #ff0a16, #c50810);
-    box-shadow: 0 6px 25px rgba(229, 9, 20, 0.6);
+    background: linear-gradient(135deg, #d81b60, #b2184b);
+    box-shadow: 0 6px 25px rgba(194, 24, 91, 0.6);
     color: white;
 }
 
 .hero-btn-secondary {
     background: white;
-    color: #333;
-    border: 2px solid #ddd;
+    color: #7d3c98;
+    border: 2px solid #d7bde2;
 }
 
 .hero-btn-secondary:hover {
-    border-color: #999;
-    color: #1a1a2e;
-    background: #f9f9f9;
+    border-color: #a569bd;
+    color: #4a0e4e;
+    background: #faf5fc;
 }
 
-/* Возможности */
 .features {
     margin: 0 auto;
 }
@@ -715,7 +833,7 @@ footer {
     text-align: center;
     font-size: 2rem;
     margin-bottom: 40px;
-    color: #1a1a2e;
+    color: #2d1b69;
 }
 
 .features-grid {
@@ -726,7 +844,7 @@ footer {
 
 .feature-card {
     background: white;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #e8daef;
     border-radius: 12px;
     padding: 30px 20px;
     text-align: center;
@@ -735,7 +853,7 @@ footer {
 
 .feature-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 10px 30px rgba(74, 14, 78, 0.12);
 }
 
 .feature-icon {
@@ -746,18 +864,70 @@ footer {
 
 .feature-card h3 {
     margin-bottom: 10px;
-    color: #2c3e50;
+    color: #4a0e4e;
     font-size: 1.2rem;
 }
 
 .feature-card p {
-    color: #666;
+    color: #7d3c98;
     font-size: 0.95rem;
     line-height: 1.6;
 }
 
-/* Адаптивность */
+/* Статусы в поиске друзей */
+.status-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+.friend-status {
+    background-color: #e8daef;
+    color: #4a0e4e;
+}
+
+.sent-status {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.received-status {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+/*АДАПТИВНОСТЬ*/
 @media (max-width: 600px) {
+    .stats-row {
+        flex-direction: column;
+    }
+    .movie-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    .movie-poster, .movie-poster-placeholder {
+        height: 220px;
+    }
+    .review-movie {
+        flex-direction: column;
+    }
+    .review-poster {
+        width: 100%;
+        max-width: 150px;
+    }
+    .star-rating label {
+        font-size: 1.5rem;
+    }
+    .filter-buttons {
+        justify-content: center;
+    }
+    .filter-btn.filter-reset {
+        margin-left: 0;
+    }
     .landing-page {
         padding: 40px 15px 30px;
     }
@@ -778,94 +948,4 @@ footer {
     .features-grid {
         grid-template-columns: 1fr;
     }
-}
-
-/* СТРАНИЦА ДРУЗЕЙ */
-.friends-page {
-    max-width: 700px;
-    margin: 0 auto;
-}
-
-.friends-page h2 {
-    margin-bottom: 25px;
-}
-
-.friend-search {
-    margin-bottom: 30px;
-}
-
-.found-users {
-    margin-top: 20px;
-}
-
-.friend-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin-bottom: 10px;
-}
-
-.friend-name {
-    font-weight: 500;
-    font-size: 1.05rem;
-}
-
-.friend-name-link {
-    font-weight: 500;
-    font-size: 1.05rem;
-    color: #2c3e50;
-    text-decoration: none;
-}
-
-.friend-name-link:hover {
-    color: #3498db;
-    text-decoration: underline;
-}
-
-.friend-card-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.incoming-requests {
-    margin-bottom: 30px;
-}
-
-.friends-list {
-    margin-bottom: 40px;
-}
-
-/* Профиль друга */
-.friend-profile h2 {
-    margin-bottom: 25px;
-}
-
-/* Бейдж с количеством заявок */
-.nav-friends {
-    position: relative;
-}
-
-.badge {
-    background-color: #e74c3c;
-    color: white;
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 10px;
-    position: absolute;
-    top: -8px;
-    right: -12px;
-    min-width: 18px;
-    text-align: center;
-    line-height: 1.2;
-}
-
-.pending-badge {
-    color: #f39c12;
-    font-size: 0.85rem;
-    font-weight: 500;
 }

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, abort
 from flask_login import login_required, current_user
 from app import db
 from app.models import Movie, UserMovie, User, Friendship
@@ -12,7 +12,7 @@ def index():
     search_query = request.args.get('search', '')
     status_filter = request.args.get('filter', 'all')  # all, to_watch, watched
     page = request.args.get('page', 1, type=int)
-    per_page = 8
+    per_page = 9
 
     if current_user.is_authenticated:
         base_query = UserMovie.query.filter_by(user_id=current_user.id)\
@@ -150,7 +150,9 @@ def add_movie():
 @main.route('/update_status/<int:user_movie_id>', methods=['POST'])
 @login_required
 def update_status(user_movie_id):
-    user_movie = UserMovie.query.get_or_404(user_movie_id)
+    user_movie = db.session.get(UserMovie, user_movie_id)
+    if user_movie is None:
+        abort(404)
     if user_movie.user_id != current_user.id:
         flash('Нет доступа')
         return redirect(url_for('main.index'))
@@ -160,7 +162,6 @@ def update_status(user_movie_id):
         user_movie.status = new_status
         db.session.commit()
     
-    # Если переключили на "просмотрено", перенаправляем на страницу оценки
     if new_status == 'watched':
         return redirect(url_for('main.rate_movie', user_movie_id=user_movie_id))
     
@@ -170,8 +171,9 @@ def update_status(user_movie_id):
 @main.route('/rate/<int:user_movie_id>', methods=['GET', 'POST'])
 @login_required
 def rate_movie(user_movie_id):
-    """Страница оценки и отзыва."""
-    user_movie = UserMovie.query.get_or_404(user_movie_id)
+    user_movie = db.session.get(UserMovie, user_movie_id)
+    if user_movie is None:
+        abort(404)
     if user_movie.user_id != current_user.id:
         flash('Нет доступа')
         return redirect(url_for('main.index'))
@@ -208,7 +210,9 @@ def my_reviews():
 @main.route('/delete/<int:user_movie_id>', methods=['POST'])
 @login_required
 def delete_movie(user_movie_id):
-    user_movie = UserMovie.query.get_or_404(user_movie_id)
+    user_movie = db.session.get(UserMovie, user_movie_id)
+    if user_movie is None:
+        abort(404)
     if user_movie.user_id != current_user.id:
         flash('Нет доступа')
         return redirect(url_for('main.index'))
@@ -217,28 +221,51 @@ def delete_movie(user_movie_id):
     flash('Удалено')
     return redirect(url_for('main.index'))
 
-# ==================== ДРУЗЬЯ ====================
-
 @main.route('/friends')
 @login_required
 def friends():
     """Страница друзей: список друзей, входящие заявки, поиск."""
     search_query = request.args.get('search', '')
     
-    # Поиск пользователей
     found_users = []
+    user_statuses = {} 
+    
     if search_query:
         found_users = User.query.filter(
             User.username.ilike(f'%{search_query}%'),
             User.id != current_user.id
         ).all()
+        
+        # Определяем статус отношений с каждым найденным пользователем
+        for user in found_users:
+            friendship = Friendship.query.filter(
+                (
+                    (Friendship.user_id == current_user.id) & (Friendship.friend_id == user.id)
+                ) |
+                (
+                    (Friendship.user_id == user.id) & (Friendship.friend_id == current_user.id)
+                )
+            ).first()
+            
+            if friendship:
+                if friendship.status == 'accepted':
+                    user_statuses[user.id] = 'friend'  # уже друзья
+                elif friendship.status == 'pending':
+                    if friendship.user_id == current_user.id:
+                        user_statuses[user.id] = 'sent'  # мы отправили заявку
+                    else:
+                        user_statuses[user.id] = 'received'  # нам отправили заявку
+                elif friendship.status == 'rejected':
+                    user_statuses[user.id] = 'rejected'  # заявка отклонена
+            else:
+                user_statuses[user.id] = 'none'  # никаких отношений
     
-    # Входящие заявки (где текущий пользователь — friend_id, статус pending)
+    # Входящие заявки
     incoming_requests = Friendship.query.filter_by(
         friend_id=current_user.id, status='pending'
     ).all()
     
-    # Список друзей (все accepted-записи, где текущий пользователь — user_id или friend_id)
+    # Список друзей
     friendships = Friendship.query.filter(
         (
             (Friendship.user_id == current_user.id) |
@@ -247,7 +274,6 @@ def friends():
         Friendship.status == 'accepted'
     ).all()
     
-    # Собираем объекты друзей
     friends_list = []
     for f in friendships:
         if f.user_id == current_user.id:
@@ -258,11 +284,11 @@ def friends():
     return render_template(
         'friends.html',
         found_users=found_users,
+        user_statuses=user_statuses,
         incoming_requests=incoming_requests,
         friends_list=friends_list,
         search_query=search_query
     )
-
 
 @main.route('/send_request/<int:user_id>', methods=['POST'])
 @login_required
@@ -304,8 +330,9 @@ def send_request(user_id):
 @main.route('/accept_request/<int:friendship_id>', methods=['POST'])
 @login_required
 def accept_request(friendship_id):
-    """Принять заявку в друзья."""
-    friendship = Friendship.query.get_or_404(friendship_id)
+    friendship = db.session.get(Friendship, friendship_id)
+    if friendship is None:
+        abort(404)
     if friendship.friend_id != current_user.id:
         flash('Нет доступа')
         return redirect(url_for('main.friends'))
@@ -319,8 +346,9 @@ def accept_request(friendship_id):
 @main.route('/reject_request/<int:friendship_id>', methods=['POST'])
 @login_required
 def reject_request(friendship_id):
-    """Отклонить заявку."""
-    friendship = Friendship.query.get_or_404(friendship_id)
+    friendship = db.session.get(Friendship, friendship_id)
+    if friendship is None:
+        abort(404)
     if friendship.friend_id != current_user.id:
         flash('Нет доступа')
         return redirect(url_for('main.friends'))
@@ -358,8 +386,6 @@ def remove_friend(friend_id):
 @main.route('/friend/<int:friend_id>')
 @login_required
 def friend_profile(friend_id):
-    """Просмотр списка фильмов друга."""
-    # Проверяем, друзья ли мы
     friendship = Friendship.query.filter(
         (
             (Friendship.user_id == current_user.id) & (Friendship.friend_id == friend_id)
@@ -374,9 +400,10 @@ def friend_profile(friend_id):
         flash('Вы не друзья с этим пользователем')
         return redirect(url_for('main.friends'))
     
-    friend = User.query.get_or_404(friend_id)
+    friend = db.session.get(User, friend_id)
+    if friend is None:
+        abort(404)
     
-    # Получаем фильмы друга
     friend_movies = UserMovie.query.filter_by(user_id=friend_id)\
                                    .join(Movie)\
                                    .order_by(UserMovie.timestamp.desc()).all()

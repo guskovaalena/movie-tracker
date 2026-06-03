@@ -234,3 +234,255 @@ def test_rate_movie(auth_client, app):
         um = db.session.get(UserMovie, um_id)
         assert um.rating == 8
         assert um.review == 'Отличный фильм!'
+
+
+def test_my_reviews_page(auth_client):
+    """Страница «Мои отзывы» открывается."""
+    response = auth_client.get('/my_reviews')
+    assert response.status_code == 200
+
+
+def test_my_reviews_shows_reviewed_movies(auth_client, app):
+    """На странице отзывов отображаются оценённые фильмы."""
+    auth_client.post('/add', data={'title': 'Reviewed Film'})
+    with app.app_context():
+        user = User.query.filter_by(username='testuser').first()
+        movie = Movie.query.filter_by(title='Reviewed Film').first()
+        um = UserMovie.query.filter_by(user_id=user.id, movie_id=movie.id).first()
+        um_id = um.id
+
+    auth_client.post(f'/update_status/{um_id}', data={'status': 'watched'})
+    auth_client.post(f'/rate/{um_id}', data={'rating': 9, 'review': 'Шедевр!'})
+
+    response = auth_client.get('/my_reviews')
+    data = response.get_data(as_text=True)
+    assert 'Reviewed Film' in data
+    assert 'Шедевр!' in data
+
+
+def test_rate_movie_page_get(auth_client, app):
+    """Страница оценки открывается (GET)."""
+    auth_client.post('/add', data={'title': 'Rate Page Test'})
+    with app.app_context():
+        user = User.query.filter_by(username='testuser').first()
+        movie = Movie.query.filter_by(title='Rate Page Test').first()
+        um = UserMovie.query.filter_by(user_id=user.id, movie_id=movie.id).first()
+        um_id = um.id
+
+    response = auth_client.get(f'/rate/{um_id}')
+    assert response.status_code == 200
+
+
+def test_rate_movie_page_post(auth_client, app):
+    """Оценка сохраняется через POST."""
+    auth_client.post('/add', data={'title': 'Rate Post Test'})
+    with app.app_context():
+        user = User.query.filter_by(username='testuser').first()
+        movie = Movie.query.filter_by(title='Rate Post Test').first()
+        um = UserMovie.query.filter_by(user_id=user.id, movie_id=movie.id).first()
+        um_id = um.id
+
+    auth_client.post(f'/rate/{um_id}', data={'rating': 7, 'review': 'Неплохо'}, follow_redirects=True)
+    with app.app_context():
+        um = db.session.get(UserMovie, um_id)
+        assert um.rating == 7
+        assert um.review == 'Неплохо'
+
+
+def test_friends_page(auth_client):
+    """Страница друзей открывается."""
+    response = auth_client.get('/friends')
+    assert response.status_code == 200
+
+
+def test_search_users(auth_client):
+    """Поиск пользователей работает."""
+    response = auth_client.get('/friends?search=testuser')
+    assert response.status_code == 200
+
+
+def test_send_friend_request(client, app):
+    """Отправка заявки в друзья между двумя пользователями."""
+    client.post('/register', data={'username': 'alice', 'password': '123'})
+    client.post('/register', data={'username': 'bob', 'password': '456'})
+
+    client.post('/login', data={'username': 'alice', 'password': '123'})
+
+    with app.app_context():
+        bob = User.query.filter_by(username='bob').first()
+        bob_id = bob.id
+
+    response = client.post(f'/send_request/{bob_id}', follow_redirects=True)
+    assert response.status_code == 200
+    data = response.get_data(as_text=True)
+    assert 'Заявка отправлена' in data
+
+    with app.app_context():
+        from app.models import Friendship
+        alice = User.query.filter_by(username='alice').first()
+        friendship = Friendship.query.filter_by(
+            user_id=alice.id, friend_id=bob_id, status='pending'
+        ).first()
+        assert friendship is not None
+
+
+def test_accept_friend_request(client, app):
+    """Принятие заявки в друзья."""
+    client.post('/register', data={'username': 'alice', 'password': '123'})
+    client.post('/register', data={'username': 'bob', 'password': '456'})
+
+    client.post('/login', data={'username': 'alice', 'password': '123'})
+    with app.app_context():
+        bob = User.query.filter_by(username='bob').first()
+        bob_id = bob.id
+    client.post(f'/send_request/{bob_id}')
+
+    with app.app_context():
+        from app.models import Friendship
+        alice = User.query.filter_by(username='alice').first()
+        friendship = Friendship.query.filter_by(
+            user_id=alice.id, friend_id=bob_id, status='pending'
+        ).first()
+        fid = friendship.id
+
+    client.get('/logout')
+    client.post('/login', data={'username': 'bob', 'password': '456'})
+
+    response = client.post(f'/accept_request/{fid}', follow_redirects=True)
+    data = response.get_data(as_text=True)
+    assert 'Теперь вы друзья' in data
+
+    with app.app_context():
+        from app.models import Friendship
+        friendship = db.session.get(Friendship, fid)
+        assert friendship.status == 'accepted'
+
+
+def test_reject_friend_request(client, app):
+    """Отклонение заявки в друзья."""
+    client.post('/register', data={'username': 'alice', 'password': '123'})
+    client.post('/register', data={'username': 'bob', 'password': '456'})
+
+    client.post('/login', data={'username': 'alice', 'password': '123'})
+    with app.app_context():
+        bob = User.query.filter_by(username='bob').first()
+        bob_id = bob.id
+    client.post(f'/send_request/{bob_id}')
+
+    with app.app_context():
+        from app.models import Friendship
+        alice = User.query.filter_by(username='alice').first()
+        friendship = Friendship.query.filter_by(
+            user_id=alice.id, friend_id=bob_id, status='pending'
+        ).first()
+        fid = friendship.id
+
+    client.get('/logout')
+    client.post('/login', data={'username': 'bob', 'password': '456'})
+
+    response = client.post(f'/reject_request/{fid}', follow_redirects=True)
+    data = response.get_data(as_text=True)
+    assert 'Заявка отклонена' in data
+
+    with app.app_context():
+        from app.models import Friendship
+        friendship = db.session.get(Friendship, fid)
+        assert friendship.status == 'rejected'
+
+
+def test_remove_friend(client, app):
+    """Удаление из друзей."""
+    client.post('/register', data={'username': 'alice', 'password': '123'})
+    client.post('/register', data={'username': 'bob', 'password': '456'})
+
+    client.post('/login', data={'username': 'alice', 'password': '123'})
+    with app.app_context():
+        bob = User.query.filter_by(username='bob').first()
+        bob_id = bob.id
+    client.post(f'/send_request/{bob_id}')
+
+    with app.app_context():
+        from app.models import Friendship
+        alice = User.query.filter_by(username='alice').first()
+        friendship = Friendship.query.filter_by(
+            user_id=alice.id, friend_id=bob_id, status='pending'
+        ).first()
+        fid = friendship.id
+
+    client.get('/logout')
+    client.post('/login', data={'username': 'bob', 'password': '456'})
+    client.post(f'/accept_request/{fid}')
+
+    client.get('/logout')
+    client.post('/login', data={'username': 'alice', 'password': '123'})
+    response = client.post(f'/remove_friend/{bob_id}', follow_redirects=True)
+    data = response.get_data(as_text=True)
+    assert 'удалён' in data.lower()
+
+    with app.app_context():
+        from app.models import Friendship
+        friendship = db.session.get(Friendship, fid)
+        assert friendship is None  
+
+
+def test_friend_profile(client, app):
+    """Просмотр профиля друга."""
+    client.post('/register', data={'username': 'alice', 'password': '123'})
+    client.post('/register', data={'username': 'bob', 'password': '456'})
+
+    client.post('/login', data={'username': 'alice', 'password': '123'})
+    with app.app_context():
+        bob = User.query.filter_by(username='bob').first()
+        bob_id = bob.id
+    client.post(f'/send_request/{bob_id}')
+
+    with app.app_context():
+        from app.models import Friendship
+        alice = User.query.filter_by(username='alice').first()
+        friendship = Friendship.query.filter_by(
+            user_id=alice.id, friend_id=bob_id, status='pending'
+        ).first()
+        fid = friendship.id
+
+    client.get('/logout')
+    client.post('/login', data={'username': 'bob', 'password': '456'})
+    client.post(f'/accept_request/{fid}')
+
+    client.get('/logout')
+    client.post('/login', data={'username': 'alice', 'password': '123'})
+    response = client.get(f'/friend/{bob_id}')
+    assert response.status_code == 200
+    data = response.get_data(as_text=True)
+    assert 'bob' in data
+
+
+def test_filter_watched(auth_client):
+    """Фильтр «Просмотрено» работает."""
+    response = auth_client.get('/?filter=watched')
+    assert response.status_code == 200
+
+
+def test_filter_to_watch(auth_client):
+    """Фильтр «Буду смотреть» работает."""
+    response = auth_client.get('/?filter=to_watch')
+    assert response.status_code == 200
+
+
+def test_filter_all(auth_client):
+    """Фильтр «Все» работает."""
+    response = auth_client.get('/?filter=all')
+    assert response.status_code == 200
+
+
+def test_search_page(auth_client):
+    """Страница поиска через API открывается."""
+    response = auth_client.get('/search?q=Matrix')
+    assert response.status_code == 200
+
+
+def test_pagination(auth_client):
+    """Пагинация работает без ошибок."""
+    for i in range(10):
+        auth_client.post('/add', data={'title': f'Paginated Film {i}'})
+    response = auth_client.get('/?page=2')
+    assert response.status_code == 200
