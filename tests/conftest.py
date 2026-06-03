@@ -25,14 +25,14 @@ def app():
 
 @pytest.fixture
 def client(app):
-    """Тестовый HTTP-клиент (эмулирует браузер)"""
+    """Тестовый HTTP-клиент"""
     return app.test_client()
 
 
 @pytest.fixture
 def auth_client(client):
     """
-    Фикстура возвращает клиента, который уже залогинен
+    Возвращает клиента, который уже залогинен
     под пользователем testuser / password123.
     """
     # Регистрируем пользователя

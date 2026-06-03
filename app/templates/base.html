@@ -13,6 +13,7 @@
             <div class="nav-links">
                 {% if current_user.is_authenticated %}
                     <span class="nav-username">{{ current_user.username }}</span>
+                    <a href="{{ url_for('main.my_reviews') }}">Мои отзывы</a>
                     <a href="{{ url_for('auth.logout') }}">Выйти</a>
                 {% else %}
                     <a href="{{ url_for('auth.login') }}">Войти</a>

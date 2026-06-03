@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="rate-section">
+    <div class="rate-card">
+        <div class="rate-header">
+            {% if user_movie.movie.poster %}
+                <img src="{{ user_movie.movie.poster }}" alt="{{ user_movie.movie.title }}" class="rate-poster">
+            {% endif %}
+            <h2>{{ user_movie.movie.title }}</h2>
+            {% if user_movie.movie.year %}
+                <span class="rate-year">{{ user_movie.movie.year }}</span>
+            {% endif %}
+        </div>
+
+        <form method="POST" class="rate-form">
+            <div class="form-group">
+                <label>Оценка (1-10):</label>
+                <div class="star-rating">
+                    {% for i in range(10, 0, -1) %}
+                        <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}"
+                               {% if user_movie.rating == i %}checked{% endif %}>
+                        <label for="star{{ i }}" title="{{ i }} из 10">★</label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="review">Отзыв:</label>
+                <textarea name="review" id="review" class="form-control" rows="5"
+                          placeholder="Напишите ваше мнение о фильме...">{{ user_movie.review or '' }}</textarea>
+            </div>
+
+            <div class="rate-actions">
+                <button type="submit" class="btn btn-success">Сохранить</button>
+                <a href="{{ url_for('main.index') }}" class="btn btn-outline">Пропустить</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

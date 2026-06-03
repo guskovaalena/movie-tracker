@@ -18,7 +18,7 @@
         <h3>Найти фильм</h3>
         <form action="{{ url_for('main.search') }}" method="GET" class="inline-form">
             <input type="text" name="q" class="form-control" placeholder="Введите название фильма..." required>
-            <button type="submit" class="btn btn-primary">🔍 Поиск</button>
+            <button type="submit" class="btn btn-primary">Поиск</button>
         </form>
     </section>
 
@@ -55,8 +55,19 @@
                                 <span class="movie-year">{{ um.movie.year }}</span>
                             {% endif %}
                             <span class="status-badge {{ um.status }}">
-                                {% if um.status == 'watched' %}✅ Просмотрено{% else %}📋 Буду смотреть{% endif %}
+                                {% if um.status == 'watched' %} Просмотрено{% else %} Буду смотреть{% endif %}
                             </span>
+                            {% if um.rating %}
+                                <div class="stars-display small">
+                                    {% for i in range(1, 11) %}
+                                        <span class="star {% if i <= um.rating %}filled{% endif %}">★</span>
+                                    {% endfor %}
+                                    <span class="rating-number">{{ um.rating }}/10</span>
+                                </div>
+                            {% endif %}
+                            {% if um.review %}
+                                <p class="review-snippet">«{{ um.review[:100] }}{% if um.review|length > 100 %}...{% endif %}»</p>
+                            {% endif %}
                         </div>
                         <div class="movie-actions">
                             <form action="{{ url_for('main.update_status', user_movie_id=um.id) }}" method="POST">

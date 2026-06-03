@@ -7,9 +7,7 @@ def assert_text_in_response(response, text):
     assert text in response.get_data(as_text=True)
 
 
-# ------------------------------------------------------------
 # Базовые страницы
-# ------------------------------------------------------------
 def test_index_page(client):
     """Главная страница открывается и содержит название приложения"""
     response = client.get('/')
@@ -31,9 +29,7 @@ def test_register_page(client):
     assert 'form' in response.get_data(as_text=True).lower()
 
 
-# ------------------------------------------------------------
 # Регистрация
-# ------------------------------------------------------------
 def test_register_success(client, app):
     """Успешная регистрация: пользователь сохраняется в БД"""
     response = client.post('/register', data={
@@ -55,9 +51,7 @@ def test_register_duplicate(client):
     assert 'уже существует' in data
 
 
-# ------------------------------------------------------------
 # Вход и выход
-# ------------------------------------------------------------
 def test_login_correct(auth_client):
     """После входа на главной отображается имя пользователя"""
     response = auth_client.get('/')
@@ -82,9 +76,7 @@ def test_logout(auth_client):
     assert 'login' in data.lower() or 'Войдите' in data.lower()
 
 
-# ------------------------------------------------------------
 # Добавление фильмов
-# ------------------------------------------------------------
 def test_add_movie_requires_login(client):
     """Без авторизации запрос на добавление перенаправляет на логин"""
     response = client.post('/add', data={'title': 'Inception'}, follow_redirects=True)
@@ -119,9 +111,7 @@ def test_add_empty_title(auth_client):
     assert_text_in_response(response, 'Введите название фильма')
 
 
-# ------------------------------------------------------------
 # Изменение статуса
-# ------------------------------------------------------------
 def test_update_status(auth_client, app):
     """Переключение статуса to_watch -> watched -> to_watch"""
     auth_client.post('/add', data={'title': 'Alien'})
@@ -167,9 +157,7 @@ def test_update_status_wrong_user(client, app):
         assert um.status == 'to_watch'
 
 
-# ------------------------------------------------------------
 # Удаление
-# ------------------------------------------------------------
 def test_delete_movie(auth_client, app):
     """Свой фильм удаляется"""
     auth_client.post('/add', data={'title': 'DeleteMe'})
@@ -206,9 +194,7 @@ def test_delete_movie_wrong_user(client, app):
         assert db.session.get(UserMovie, um_id) is not None
 
 
-# ------------------------------------------------------------
 # Статистика
-# ------------------------------------------------------------
 def test_statistics(auth_client, app):
     """Проверка счётчиков на главной странице"""
     auth_client.post('/add', data={'title': 'Film1'})
@@ -229,3 +215,22 @@ def test_statistics(auth_client, app):
     # Проверяем, что статистика отображает числа 1 и 2 (можно просто наличие цифр)
     assert '1' in data  # watched
     assert '2' in data  # to_watch (Film2 и Film3)
+
+def test_rate_movie(auth_client, app):
+    
+    auth_client.post('/add', data={'title': 'RateMe'})
+    with app.app_context():
+        user = User.query.filter_by(username='testuser').first()
+        movie = Movie.query.filter_by(title='RateMe').first()
+        um = UserMovie.query.filter_by(user_id=user.id, movie_id=movie.id).first()
+        um_id = um.id
+
+    # Переключаем на watched
+    auth_client.post(f'/update_status/{um_id}', data={'status': 'watched'})
+    # Ставим оценку
+    response = auth_client.post(f'/rate/{um_id}', data={'rating': 8, 'review': 'Отличный фильм!'}, follow_redirects=True)
+    assert response.status_code == 200
+    with app.app_context():
+        um = db.session.get(UserMovie, um_id)
+        assert um.rating == 8
+        assert um.review == 'Отличный фильм!'

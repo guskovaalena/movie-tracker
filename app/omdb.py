@@ -8,7 +8,6 @@ BASE_URL = 'http://www.omdbapi.com/'
 
 
 def _get_requests():
-    """Ленивый импорт requests, чтобы тесты без сети не падали при импорте модуля."""
     try:
         import requests
         return requests
@@ -18,10 +17,6 @@ def _get_requests():
 
 
 def search_movies(query):
-    """
-    Ищет фильмы по названию, возвращает список словарей.
-    Обходит ограничение бесплатного ключа OMDb.
-    """
     if not OMDB_API_KEY:
         logger.warning("OMDB_API_KEY is not set")
         return []
@@ -30,7 +25,6 @@ def search_movies(query):
     if requests is None:
         return []
 
-    # Сначала пробуем обычный поиск
     params = {
         'apikey': OMDB_API_KEY,
         's': query,
@@ -45,7 +39,7 @@ def search_movies(query):
         if data.get('Response') == 'True':
             return data.get('Search', [])
 
-        # Если ошибка "Too many results" — пробуем искать точнее
+        # Если ошибка "Too many results" пробуем искать точнее
         if data.get('Error') == 'Too many results.':
             logger.info("Too many results, trying exact title search")
             return _search_by_title(requests, query)
@@ -60,10 +54,7 @@ def search_movies(query):
 
 
 def _search_by_title(requests, query):
-    """
-    Поиск по точному названию.
-    Возвращает один фильм, но лучше чем ничего.
-    """
+
     params = {
         'apikey': OMDB_API_KEY,
         't': query,
@@ -75,7 +66,7 @@ def _search_by_title(requests, query):
         data = response.json()
 
         if data.get('Response') == 'True':
-            # Преобразуем в формат, как у search
+
             return [{
                 'Title': data.get('Title'),
                 'Year': data.get('Year'),
@@ -94,7 +85,7 @@ def _search_by_title(requests, query):
 
 
 def get_movie_details(imdb_id):
-    """Получает подробную информацию о фильме по IMDb ID."""
+
     if not OMDB_API_KEY:
         return None
 
